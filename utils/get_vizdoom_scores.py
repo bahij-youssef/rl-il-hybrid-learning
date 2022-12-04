@@ -7,6 +7,7 @@
 import argparse
 import json
 from pprint import pprint
+from pathlib import Path
 
 import numpy as np
 
@@ -17,7 +18,8 @@ parser.add_argument("inputs", type=str, nargs="+", help="Input .json files")
 
 def main(args):
     scores = []
-    for filepath in args.inputs:
+    
+    for filepath in Path(args.inputs[0]).glob('*.json'):
         json_data = None
         with open(filepath) as f:
             json_data = json.load(f)
