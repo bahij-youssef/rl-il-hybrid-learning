@@ -1,5 +1,5 @@
 ### Training ###
-epochs=30
+epochs=100
 workers=4
 framestack=1
 l2=0.00001
@@ -17,8 +17,8 @@ mkdir -p $model_dir
 actions=3
 for i in $(seq 1 $repetitions)
 do
-    python3 train.py $data_dir defend_the_center $model_dir/defend_the_center_${i} --epochs $epochs --workers $workers --framestack $framestack --l2 $l2 --save-freq $save_freq --json --width $width --height $height --actions $actions
-    python3 plot_history.py $model_dir/defend_the_center_${i}-history.json --save
+    python3 train.py $data_dir vizdoom_defend_the_center $model_dir/vizdoom_defend_the_center_${i} --epochs $epochs --workers $workers --framestack $framestack --l2 $l2 --save-freq $save_freq --json --width $width --height $height --actions $actions
+    python3 plot_history.py $model_dir/vizdoom_defend_the_center_${i}-history.json --save
 done
 
 ### Evaluation ###
@@ -30,10 +30,10 @@ games=50
 mkdir -p $savedir
 
 # Only evaluate last three epochs for the final performance
-for epoch in 28 29 30
+for epoch in $((epochs - 2)) $((epochs - 1)) $epochs
 do
-    python3 play_vizdoom.py $model_dir/defend_the_center*${epoch}.pt --config doom_scenarios/health_gathering_supreme.cfg --processes $processes --games $games --framestack $framestack --save $savedir --width $width --height $height
+    python3 play_vizdoom.py $model_dir/vizdoom_defend_the_center*${epoch}.pt --config doom_scenarios/defend_the_center.cfg --processes $processes --games $games --framestack $framestack --save $savedir --width $width --height $height
 done
 
 # Play random results
-python3 play_vizdoom.py $models_dir/defend_the_center_all_1 --config doom_scenarios/health_gathering_supreme.cfg --processes $processes --games 100 --framestack $framestack --save $savedir-random --width $width --height $height --no-cuda --random
+python3 play_vizdoom.py $models_dir/vizdoom_defend_the_center_all_1 --config doom_scenarios/defend_the_center.cfg --processes $processes --games 100 --framestack $framestack --save $savedir-random --width $width --height $height --no-cuda --random
