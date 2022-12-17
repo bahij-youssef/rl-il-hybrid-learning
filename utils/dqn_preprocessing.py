@@ -7,9 +7,6 @@ import random
 import torch
 import torchvision.transforms as T
 
-# Should go in utils.py
-# All utility functions that should be available accross objects
-
 def initialise_environment(scenario: str, actions: int)->tuple:
   # Create Doom Game env
   game = vzd.DoomGame()
@@ -55,22 +52,6 @@ def resize_frame(img, output_h=60, output_w=80):
 
   return normalized_resized
 
-# def resize_frame(frame, resize_tuple):
-#     # Get the dimensions of the frame and the resize tuple
-#     (height, width) = frame.shape[:2]
-#     (new_width, new_height) = resize_tuple
-
-#     # Calculate the aspect ratio of the original frame
-#     aspect_ratio = width / float(height)
-
-#     # Calculate the scaling factor for the new frame
-#     scaling_factor = min(new_width / width, new_height / height)
-
-#     # Resize the frame using the scaling factor
-#     frame = cv2.resize(frame, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
-
-#     # Return the resized frame
-#     return frame
 
 def get_frame(game, transform=None, resize=(60,80)):
   if transform:
