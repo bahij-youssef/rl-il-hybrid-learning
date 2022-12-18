@@ -1,4 +1,4 @@
-# Behavioural cloning experiments with video games
+# Behavioural cloning and reinforcement learning experiments with Doom
 
 ## ViZDoom experiments
 

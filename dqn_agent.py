@@ -75,6 +75,14 @@ class Agent:
 
             if variables_cur['health'] < variables_prev['health']:
                 r -= 1
+
+        elif self.scenario == 'defend_the_center':
+            r += (variables_cur['kills'] - variables_prev['kills'])*10#5
+            if variables_cur['ammo'] < variables_prev['ammo']:
+                r -= 0.1
+
+            if variables_cur['health'] < variables_prev['health']:
+                r -= 1
                 
         return r
         
