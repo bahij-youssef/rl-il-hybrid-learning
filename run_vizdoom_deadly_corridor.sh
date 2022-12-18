@@ -1,0 +1,36 @@
+### Training ###
+epochs=100
+workers=4
+framestack=1
+l2=0.00001
+data_dir=doom_recordings
+experiments_dir=experiments
+save_freq=1
+repetitions=3
+
+width=80
+height=60
+
+### Training ###
+model_dir=$experiments_dir/vizdoom-models
+mkdir -p $model_dir
+actions=3
+for i in $(seq 1 $repetitions)
+do
+    python3 train.py $data_dir vizdoom_deadly_corridor $model_dir/vizdoom_deadly_corridor_${i} --epochs $epochs --workers $workers --framestack $framestack --l2 $l2 --save-freq $save_freq --json --width $width --height $height --actions $actions
+    python3 plot_history.py $model_dir/vizdoom_deadly_corridor_${i}-history.json --save
+done
+
+### Evaluation ###
+savedir=$experiments_dir/vizdoom-results
+action=sampling
+processes=4
+games=50
+
+mkdir -p $savedir
+
+# Only evaluate last three epochs for the final performance
+for epoch in $((epochs - 2)) $((epochs - 1)) $epochs
+do
+    python3 play_vizdoom.py $model_dir/vizdoom_deadly_corridor*${epoch}.pt --config doom_scenarios/deadly_corridor.cfg --processes $processes --games $games --framestack $framestack --save $savedir --width $width --height $height
+done
