@@ -25,6 +25,8 @@ parser.add_argument("--height", "-y", type=int, default=84,
                     help="Height of the image")
 parser.add_argument("--games", type=int, default=1,
                     help="How many games (per process) to run.")
+parser.add_argument("--framestack", type=int, default=3,
+                    help="Size of the frames stack.")
 parser.add_argument("--no-cuda", type=bool, default=False,
                     help="How many games (per process) to run.")
 
@@ -39,7 +41,7 @@ else:
 
 def play_game(model_name, config, writer):
     # Determine the number of actions
-    if config in ['deathmatch','deadly_corridor']:
+    if Path(config).stem in ['deathmatch','deadly_corridor']:
         actions = 6
     else:
         actions = 3
@@ -59,6 +61,7 @@ def play_game(model_name, config, writer):
     GameStats = namedtuple('GameStats',('images','total_reward','kills','ammo','game_count'))
 
     for game in range(args.games):
+        print(f'Running game number {game+1} for model {Path(model_name).stem}')
         frame_stack = deque([],maxlen=3)
         env.new_episode()
         total_reward = 0
@@ -67,7 +70,7 @@ def play_game(model_name, config, writer):
         observation = env.get_state()
         gif_images.append(observation.screen_buffer.transpose([1,2,0]))
 
-        frame = get_frame(game)
+        frame = get_frame(env)
         for _ in range(args.framestack):
           frame_stack.append(frame)
         state = stack_frames(frame_stack)
@@ -93,9 +96,9 @@ def play_game(model_name, config, writer):
             total_reward += reward
             
             if done:
-                kills = game.get_game_variable(GameVariable.KILLCOUNT)
-                health = game.get_game_variable(GameVariable.HEALTH)
-                ammo = game.get_game_variable(GameVariable.AMMO2)
+                kills = env.get_game_variable(GameVariable.KILLCOUNT)
+                health = env.get_game_variable(GameVariable.HEALTH)
+                ammo = env.get_game_variable(GameVariable.AMMO2)
 
                 writer.add_scalar('Game variables/Kills', kills, game)
                 writer.add_scalar('Game variables/Ammo', ammo, game)
