@@ -3,6 +3,7 @@ from PIL import Image
 import vizdoom as vzd
 from vizdoom import GameVariable
 import random
+import moviepy.editor as mpy
 
 import torch
 import torchvision.transforms as T
@@ -117,3 +118,17 @@ def update_target(current_model, target_model):
     current_model, target_model : torch models
     """
     target_model.load_state_dict(current_model.state_dict())
+
+
+def make_gif(images, fname, fps=20):
+
+    def make_frame(t):
+        try:
+            x = images[int(fps*t)]
+        except:
+            x = images[-1]
+        return x.astype(np.uint8)
+    myfps = fps
+    clip = mpy.VideoClip(make_frame, duration=len(images)/fps)
+    clip.fps = fps
+    clip.write_gif(fname, program='ffmpeg', fuzz=50, verbose=False)
