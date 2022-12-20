@@ -38,8 +38,14 @@ else:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def play_game(model_name, config, writer):
+    # Determine the number of actions
+    if config in ['deathmatch','deadly_corridor']:
+        actions = 6
+    else:
+        actions = 3
+
     # Setup the environment
-    env, possible_actions = initialise_environment(config)
+    env, possible_actions = initialise_environment(config, actions)
     env.set_mode(vzd.Mode.PLAYER)
     env.init()
 
