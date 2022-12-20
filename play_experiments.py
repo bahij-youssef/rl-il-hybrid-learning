@@ -25,6 +25,8 @@ parser.add_argument("--height", "-y", type=int, default=84,
                     help="Height of the image")
 parser.add_argument("--games", type=int, default=1,
                     help="How many games (per process) to run.")
+parser.add_argument("--no-cuda", type=bool, default=False,
+                    help="How many games (per process) to run.")
 
 args = parser.parse_args()
 
@@ -147,4 +149,4 @@ def main(model_path, games_count):
 
 
 if __name__ == '__main__':
-    main(args.models,args.game)
+    main(args.models,args.games)
