@@ -109,8 +109,8 @@ def get_models(model_path):
 
     models_dict = dict()
 
-    for config in models.listdir():
-        models_dict[config.stem] = config.listdir()
+    for config in models.iterdir():
+        models_dict[config.stem] = config.iterdir()
     
     return models_dict
 
@@ -149,4 +149,4 @@ def main(model_path, games_count):
 
 
 if __name__ == '__main__':
-    main(args.models,args.games)
+    main(args.models[0],args.games)
