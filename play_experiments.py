@@ -60,6 +60,9 @@ def play_game(model_name, config, writer):
     game_capture_dict = dict()
     GameStats = namedtuple('GameStats',('images','total_reward','kills','ammo','game_count'))
 
+    # Best reward game tracker
+    max_reward = 0
+
     for game in range(args.games):
         print(f'Running game number {game+1} for model {Path(model_name).stem}')
         frame_stack = deque([],maxlen=3)
@@ -104,11 +107,14 @@ def play_game(model_name, config, writer):
                 writer.add_scalar('Game variables/Ammo', ammo, game)
                 writer.add_scalar('Game variables/Health', health, game)
 
-                game_stats = GameStats(gif_images,total_reward,kills,ammo,game)
+                if total_reward > max_reward:
+                    max_reward = total_reward
+                    game_stats = GameStats(gif_images,total_reward,kills,ammo,game)
+                    game_capture_dict[game] = game_stats
             else:
                 continue
         
-        game_capture_dict[game] = game_stats
+        #game_capture_dict[game] = game_stats
     
     return game_capture_dict
 
