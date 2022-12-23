@@ -102,10 +102,14 @@ def play_game(model_name, config, writer):
                 kills = env.get_game_variable(GameVariable.KILLCOUNT)
                 health = env.get_game_variable(GameVariable.HEALTH)
                 ammo = env.get_game_variable(GameVariable.AMMO2)
+                tics = env.get_episode_start_time()
+                episode_timeout = env.get_episode_timeout()
 
                 writer.add_scalar('Game variables/Kills', kills, game)
                 writer.add_scalar('Game variables/Ammo', ammo, game)
                 writer.add_scalar('Game variables/Health', health, game)
+                writer.add_scalar('tics', tics, game)
+                writer.add_scalar('episode_timeout', episode_timeout, game)
 
                 if total_reward > max_reward:
                     max_reward = total_reward
