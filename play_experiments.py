@@ -102,7 +102,7 @@ def play_game(model_name, config, writer):
                 kills = env.get_game_variable(GameVariable.KILLCOUNT)
                 health = env.get_game_variable(GameVariable.HEALTH)
                 ammo = env.get_game_variable(GameVariable.AMMO2)
-                tics = env.get_episode_start_time()
+                tics = env.get_state().tic
                 episode_timeout = env.get_episode_timeout()
 
                 writer.add_scalar('Game variables/Kills', kills, game)
