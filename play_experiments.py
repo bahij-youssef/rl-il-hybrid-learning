@@ -68,6 +68,7 @@ def play_game(model_name, config, writer):
         frame_stack = deque([],maxlen=3)
         env.new_episode()
         total_reward = 0
+        total_tics = 0
         gif_images = list()
 
         observation = env.get_state()
@@ -81,6 +82,7 @@ def play_game(model_name, config, writer):
         done = env.is_episode_finished()
 
         while not done:
+            total_tics += 1
             frame_stack.append(get_frame(env))
             state = stack_frames(frame_stack)
 
@@ -102,13 +104,12 @@ def play_game(model_name, config, writer):
                 kills = env.get_game_variable(GameVariable.KILLCOUNT)
                 health = env.get_game_variable(GameVariable.HEALTH)
                 ammo = env.get_game_variable(GameVariable.AMMO2)
-                tics = env.get_state().tic
                 episode_timeout = env.get_episode_timeout()
 
                 writer.add_scalar('Game variables/Kills', kills, game)
                 writer.add_scalar('Game variables/Ammo', ammo, game)
                 writer.add_scalar('Game variables/Health', health, game)
-                writer.add_scalar('tics', tics, game)
+                writer.add_scalar('tics', (total_tics*args.rate)+1, game)
                 writer.add_scalar('episode_timeout', episode_timeout, game)
 
                 if total_reward > max_reward:
